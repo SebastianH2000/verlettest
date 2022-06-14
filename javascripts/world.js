@@ -1,6 +1,7 @@
 var World = [];
 
 var noiseSeed = Math.random()*1000;
+//var noiseSeed = 977.4558480555837;
 var noiseSeed2 = noiseSeed/120;
 
 var spawnY = 0;
@@ -26,10 +27,10 @@ function createChunk(x, y) {
             heightMap += Math.abs(ImprovedNoise.noise(xCoord/2000,3700.6,noiseSeed))*(600) - (100);
 
             if (x === 0 && y === 0 && i === 1 ) {
-                spawnY = Math.max(Math.max(Math.floor(heightMap)*16-224,-256)+16,spawnY);
-            } else if (x === 2 && y === 0 && i === 16 ) {
-                spawnY = Math.max(Math.floor(heightMap)*16-224,-256)+16;
+                spawnY = Math.max(Math.max(Math.floor(heightMap)*16-224,-240),spawnY);
                 player.y = spawnY;
+            } else if (x === 2 && y === 0 && i === 16 ) {
+                spawnY = Math.max(Math.floor(heightMap)*16-224,-256);
             }
 
             World[x][y]['yCoord'] = yCoord - j;
@@ -114,6 +115,7 @@ function drawWorldCan(x, y) {
         if (World[toBijective(x)][toBijective(y)] !== 0 && World[toBijective(x)][toBijective(y)] !== undefined) {
             for (let q = 1; q < 17; q++) {
                 for (let w = 1; w < 17; w++) {
+                    let thisY = Math.abs((y*16)+w);
                     let thisBlock = World[toBijective(x)][toBijective(y)]['x' + q + 'y' + w];
                     /*if (lastChunkX === x && lastChunkY === y) {
                         thisBlock = lastChunkPiece['x' + q + 'y' + w];
@@ -160,7 +162,8 @@ function drawWorldCan(x, y) {
                             fillTrue = true;
                         }
                         else if (thisBlock === '0006') {
-                            World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
+                            //World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
+                            World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(0, 0, Math.max(255-thisY*3,0));
                             fillTrue = true;
                         }
                         else if (thisBlock === '1007') {
@@ -193,4 +196,17 @@ function drawWorld() {
             }
         }
     }
+}
+
+/*function calcWorldPosFromPixels(x,y) {
+    let xTile = Math.floor(x/16);
+    let yTile = Math.floor(y/16);
+}*/
+
+function tileToWorldTile(x,y) {
+    let xPos = toBijective(Math.floor(x/16));
+    let yPos = toBijective(Math.floor(y/16));
+    //console.log(xPos + "," + yPos);
+    //console.log(World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)]);
+    return World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)];
 }
