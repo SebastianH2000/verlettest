@@ -7,9 +7,6 @@ var noiseSeed2 = noiseSeed/120;
 var spawnY = 0;
 
 function createChunk(x, y) {
-    if (x === 0 && y === 0) {
-        console.log('hah')
-    }
     //World[x][y] = Math.random();
     //console.log('chunkCreated');
     World[x][y] = {};
@@ -28,7 +25,7 @@ function createChunk(x, y) {
 
             if (x === 0 && y === 0 && i === 1 ) {
                 spawnY = Math.max(Math.max(Math.floor(heightMap)*16-224,-240),spawnY);
-                player.y = spawnY;
+                player.y = spawnY+256;
             } else if (x === 2 && y === 0 && i === 16 ) {
                 spawnY = Math.max(Math.floor(heightMap)*16-224,-256);
             }
@@ -37,7 +34,7 @@ function createChunk(x, y) {
 
             if (yCoord > heightMap) {
                 if (yCoord < 0 && yCoord > heightMap) {
-                    World[x][y]['x' + i + 'y' + j] = '0006';
+                    World[x][y]['x' + i + 'y' + j] = '2006';
                 }
                 else {
                     World[x][y]['x' + i + 'y' + j] = '0000';
@@ -161,7 +158,7 @@ function drawWorldCan(x, y) {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'gold';
                             fillTrue = true;
                         }
-                        else if (thisBlock === '0006') {
+                        else if (thisBlock === '2006') {
                             //World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(0, 0, Math.max(255-thisY*3,0));
                             fillTrue = true;
@@ -202,11 +199,3 @@ function drawWorld() {
     let xTile = Math.floor(x/16);
     let yTile = Math.floor(y/16);
 }*/
-
-function tileToWorldTile(x,y) {
-    let xPos = toBijective(Math.floor(x/16));
-    let yPos = toBijective(Math.floor(y/16));
-    //console.log(xPos + "," + yPos);
-    //console.log(World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)]);
-    return World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)];
-}

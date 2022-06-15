@@ -54,6 +54,6 @@ function newCanvas(id,divId) {
 
 function outline(x,y) {
     ctx.beginPath();
-    ctx.rect(x*256,y*256,256,256);
+    ctx.rect(x*256-player.x,y*256+player.y,256,256);
     ctx.stroke();
 }

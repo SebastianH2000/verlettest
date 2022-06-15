@@ -96,3 +96,22 @@ function fromBijective(x) {
         return x / -2;
     }
 }
+
+function absMod(n, m) {
+    return ((n % m) + m) % m;
+}
+
+function pixelToWorldTile(x,y) {
+    return tileToWorldTile(Math.floor(x/16),Math.floor((y+256)/16));
+}
+
+function tileToWorldTile(x,y) {
+    let xPos = toBijective(Math.floor(x/16));
+    let yPos = toBijective(Math.floor(y/16));
+    //console.log(World[xPos][yPos])
+    //console.log("x" + Math.floor(absMod(x,16)+1) + "y" + Math.floor(absMod(y,16)+1));
+    return World[xPos][yPos]["x" + Math.floor(absMod(x,16)+1) + "y" + Math.floor(absMod(y,16)+1)];
+    //console.log(xPos + "," + yPos);
+    //console.log(World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)]);
+    //return World[xPos][yPos]["x" + () + "y" + (toBijective((y%16)+1))];
+}

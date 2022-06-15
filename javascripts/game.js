@@ -17,12 +17,22 @@ function mainLoop() {
     //World[0][0].ctx.fillRect(0,0,50,50);
 
     ctx.fillStyle = "red";
+    ctx.globalAlpha = 0.5;
     ctx.fillRect(-16,-32,32,64);
+    ctx.globalAlpha = 1;
 
     //outline(0,0);
     //outline(-1,0);
     //player.y = -240;
     //clearCanvas();
+
+    ctx.fillStyle = "black";
+    //ctx.fillRect(absMod(0-player.x,16),player.y%16,16,16);
+    //let pixelVal = pixelToWorldTile(player.x,player.y-32);
+    //console.log(pixelToWorldTile(player.x,player.y-32).charAt(0));
+    //console.log(pixelVal.charAt(0));
+    //pixelToWorldTile(player.x,player.y)
+    outline(Math.floor(player.x/256),Math.floor(player.y/-256));
 }
 
 
@@ -45,3 +55,7 @@ function mainLoop() {
 }
 
 setInterval(mainLoop,20);*/
+
+window.onload = function() {
+    //playerOnMove();
+}
