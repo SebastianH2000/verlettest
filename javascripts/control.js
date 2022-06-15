@@ -115,3 +115,8 @@ function tileToWorldTile(x,y) {
     //console.log(World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)]);
     //return World[xPos][yPos]["x" + () + "y" + (toBijective((y%16)+1))];
 }
+
+function deleteTile(testX1,testY) {
+    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
+    drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+}

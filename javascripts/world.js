@@ -1,6 +1,7 @@
 var World = [];
 
 var noiseSeed = Math.random()*1000;
+//var noiseSeed = 680.178573998786;
 //var noiseSeed = 977.4558480555837;
 var noiseSeed2 = noiseSeed/120;
 
@@ -110,6 +111,8 @@ var lastChunkPiece = 0;
 function drawWorldCan(x, y) {
     if (World[toBijective(x)] !== undefined) {
         if (World[toBijective(x)][toBijective(y)] !== 0 && World[toBijective(x)][toBijective(y)] !== undefined) {
+            World[toBijective(x)][toBijective(y)].ctx.beginPath();
+            World[toBijective(x)][toBijective(y)].ctx.clearRect(0,0,256,256);
             for (let q = 1; q < 17; q++) {
                 for (let w = 1; w < 17; w++) {
                     let thisY = Math.abs((y*16)+w);

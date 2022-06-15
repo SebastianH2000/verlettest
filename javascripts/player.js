@@ -11,6 +11,7 @@ var player = {
     windowY2: Math.ceil((this.y + (canY / 2)) / 256) + 1,
     spectate: false,
     isGrounded: true,
+    underwater: false,
     calcStats(val) {
         this.chunkX = Math.round(this.x / 256);
         this.chunkY = Math.round(this.y / 256);
@@ -19,25 +20,57 @@ var player = {
         this.windowX2 = Math.ceil((this.x + (canX / 2)) / 256) + 1;
         this.windowY2 = Math.ceil((this.y + (canY / 2)) / 256) + 1;
 
-        if (pixelToWorldTile(this.x,this.y-32).charAt(0) === '0' && pixelToWorldTile(this.x-16,this.y-32).charAt(0) === '0' && pixelToWorldTile(this.x+16,this.y-32).charAt(0) === '0') {
-            this.isGrounded = false;
+        if (pixelToWorldTile(this.x,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x-16,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x+16,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x,this.y-24).charAt(0) === '2' || pixelToWorldTile(this.x-16,this.y-24).charAt(0) === '2' || pixelToWorldTile(this.x+16,this.y-24).charAt(0) === '2') {
+            this.underwater = true;
         }
         else {
+            if (this.underwater && this.velY > 0) {
+                console.log('heeh')
+                this.velY --;
+            }
+            this.underwater = false;
+        }
+        if (pixelToWorldTile(this.x,this.y-32).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-32).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-32).charAt(0) === '1') {
             this.isGrounded = true;
+        }
+        else {
+            this.isGrounded = false;
         }
     },
     applyPhysics() {
-        if (!this.isGrounded) {
-            this.velY -= 0.2;
+        if (!this.underwater) { 
+            if (!this.isGrounded) {
+                this.velY -= 0.2;
+            }
+            else if (this.velY < 0) {
+                this.velY = 0;
+            }
+            if (pixelToWorldTile(this.x,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-20).charAt(0) === '1') {
+                this.y += 8;
+            }
+            else if (pixelToWorldTile(this.x,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-30).charAt(0) === '1') {
+                this.y += 2;
+            }
         }
-        else if (this.velY < 0) {
-            this.velY = 0;
-        }
-        if (pixelToWorldTile(this.x,this.y-20).charAt(0) !== '0' || pixelToWorldTile(this.x-16,this.y-20).charAt(0) !== '0' || pixelToWorldTile(this.x+16,this.y-20).charAt(0) !== '0') {
-            this.y += 8;
-        }
-        else if (pixelToWorldTile(this.x,this.y-30).charAt(0) !== '0' || pixelToWorldTile(this.x-16,this.y-30).charAt(0) !== '0' || pixelToWorldTile(this.x+16,this.y-30).charAt(0) !== '0') {
-            this.y += 2;
+        else {
+            //console.log(this.isGrounded)
+            if (!this.isGrounded) {
+                if (this.velY < -3.5) {
+                    this.velY = -3.5;
+                }
+                else {
+                    this.velY -= 0.075;
+                }
+            }
+            else if (this.velY < 0) {
+                this.velY = 0;
+            }
+            if (pixelToWorldTile(this.x,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-20).charAt(0) === '1') {
+                this.y += 8;
+            }
+            else if (pixelToWorldTile(this.x,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-30).charAt(0) === '1') {
+                this.y += 2;
+            }
         }
 
         player.x += player.velX;
@@ -69,6 +102,24 @@ function playerDown() {
     if (player.spectate) {
         player.y -= 5;
     }
+    else {
+        let testX1 = player.x;
+        let testX2 = player.x;
+        let testX3 = player.x;
+        let testY = player.y-32;
+        if (pixelToWorldTile(testX1,testY).charAt(0) !== '0' || pixelToWorldTile(testX2,testY).charAt(0) !== '0' || pixelToWorldTile(testX3,testY).charAt(0) !== '0') {
+            /*World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
+            World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
+            drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+            drawWorldCan(Math.floor(testX2/256),Math.floor(testY/256)+1);*/
+            deleteTile(testX1,testY);
+            deleteTile(testX2,testY);
+            deleteTile(testX3,testY);
+        }
+    }
+    //Math.floor(x/16),Math.floor((y+256)/16)
+    //toBijective(Math.floor(x/16))
+    //World[xPos][yPos]["x" + Math.floor(absMod(x,16)+1) + "y" + Math.floor(absMod(y,16)+1)]
 }
 
 function playerRight() {
@@ -76,7 +127,12 @@ function playerRight() {
     if (player.spectate) {
         player.x += 5;
     }
-    player.x += 5;
+    if (pixelToWorldTile(player.x+19,player.y-8).charAt(0) !== '1') {
+        player.x += 5;
+    }
+    else if (pixelToWorldTile(player.x+16,player.y-8).charAt(0) === '1') {
+        player.x--;
+    }
 }
 
 function playerLeft() {
@@ -84,7 +140,12 @@ function playerLeft() {
     if (player.spectate) {
         player.x -= 5;
     }
-    player.x -= 5;
+    if (pixelToWorldTile(player.x-19,player.y-8).charAt(0) !== '1') {
+        player.x -= 5;
+    }
+    else if (pixelToWorldTile(player.x-16,player.y-8).charAt(0) === '1') {
+        player.x++;
+    }
 }
 
 
