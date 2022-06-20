@@ -1,8 +1,8 @@
 var World = [];
 
-var noiseSeed = Math.random()*1000;
+//var noiseSeed = Math.random()*1000;
 //var noiseSeed = 680.178573998786;
-//var noiseSeed = 977.4558480555837;
+var noiseSeed = 977.4558480555837;
 var noiseSeed2 = noiseSeed/120;
 
 var spawnY = 0;
@@ -31,33 +31,45 @@ function createChunk(x, y) {
                 spawnY = Math.max(Math.floor(heightMap)*16-224,-256);
             }
 
+            World[x][y]['x' + i + 'y' + j] = {
+                materialType: 0,
+                material: 0,
+            }
             World[x][y]['yCoord'] = yCoord - j;
 
             if (yCoord > heightMap) {
                 if (yCoord < 0 && yCoord > heightMap) {
-                    World[x][y]['x' + i + 'y' + j] = '2006';
+                    World[x][y]['x' + i + 'y' + j].materialType = 2;
+                    World[x][y]['x' + i + 'y' + j].material = 'water';
                 }
                 else {
-                    World[x][y]['x' + i + 'y' + j] = '0000';
+                    World[x][y]['x' + i + 'y' + j].materialType = 0;
+                    World[x][y]['x' + i + 'y' + j].material = 'air';
                 }
             }
             else if (yCoord + 1 > heightMap && yCoord > -2) {
-                World[x][y]['x' + i + 'y' + j] = '1007';
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'grass';
             }
             else if (yCoord + (10 + Math.random() * 5) > heightMap) {
-                World[x][y]['x' + i + 'y' + j] = '1001';
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'dirt';
             }
-            else if (yCoord < -5 && Math.random() > 0.99) {
-                World[x][y]['x' + i + 'y' + j] = '1003';
+            else if (yCoord < heightMap - 15 && ImprovedNoise.noise(xCoord/8,yCoord/8,noiseSeed) > 0.8 - Math.min(Math.max(Math.pow(Math.abs(yCoord/1000),0.5),0),0.2)) {
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'coal';
             }
-            else if (yCoord < -25 && Math.random() > 0.995) {
-                World[x][y]['x' + i + 'y' + j] = '1004';
+            else if (yCoord < heightMap - 25 && ImprovedNoise.noise(xCoord/10+300,yCoord/10+400,noiseSeed) > 0.85 - Math.min(Math.max(Math.pow(Math.abs(yCoord/1000),0.5),0),0.2)) {
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'iron';
             }
-            else if (yCoord < -50 && Math.random() > 0.9995) {
-                World[x][y]['x' + i + 'y' + j] = '1005';
+            else if (yCoord < heightMap - 50 && ImprovedNoise.noise(xCoord/12-300,yCoord/12-400,noiseSeed) > 0.875 - Math.min(Math.max(Math.pow(Math.abs(yCoord/1000),0.5),0),0.2)) {
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'gold';
             }
             else {
-                World[x][y]['x' + i + 'y' + j] = '1002';
+                World[x][y]['x' + i + 'y' + j].materialType = 1;
+                World[x][y]['x' + i + 'y' + j].material = 'stone';
             }
         }
     }
@@ -139,37 +151,39 @@ function drawWorldCan(x, y) {
 
                     //let tempCtx = World[toBijective(i)][toBijective(j)].ctx
                     //if (thisBlock !== lastType) {
+                    if (thisBlock.materialType !== 'air') {
                         fillTrue = false;
-                        if (thisBlock === '1001') {
+                        if (thisBlock.material === 'dirt') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(200, 100, 50);
                             fillTrue = true;
                             //ctx.drawImage(grassTileSingleImg, iBi*160-playerX-q*-20-100, jBi*160+playerY-w*20+80, 20, 20);
                         }
-                        if (thisBlock === '1002') {
+                        if (thisBlock.material === 'stone') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(100, 100, 120);
                             fillTrue = true;
                         }
-                        else if (thisBlock === '1003') {
+                        else if (thisBlock.material === 'coal') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(10, 10, 10);
                             fillTrue = true;
                         }
-                        else if (thisBlock === '1004') {
+                        else if (thisBlock.material === 'iron') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'beige';
                             fillTrue = true;
                         }
-                        else if (thisBlock === '1005') {
+                        else if (thisBlock.material === 'gold') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'gold';
                             fillTrue = true;
                         }
-                        else if (thisBlock === '2006') {
+                        else if (thisBlock.material === 'water') {
                             //World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(0, 0, Math.max(255-thisY*3,0));
                             fillTrue = true;
                         }
-                        else if (thisBlock === '1007') {
+                        else if (thisBlock.material === 'grass') {
                             World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'green';
                             fillTrue = true;
                         }
+                    }
                     //}
                     if (fillTrue === true) {
                         //drawSquare(iBi * 256 - player.x - q * -16 - 80, jBi * 256 + player.y - w * 16 + 64, 17, World[toBijective(i)][toBijective(j)].ctx);

@@ -1,4 +1,8 @@
 //dynamically scale the game window
+var scaleFactor = 1;
+var bigSide = 1;
+var sideOffset = 1;
+var canObj = {};
 function scaleWindow() {
     document.body.style.transform = "scale(1)";
     let win = window,
@@ -9,7 +13,7 @@ function scaleWindow() {
         y = win.innerHeight || docElem.clientHeight || body.clientHeight;
     document.body.style.transform = "scale(" + Math.min(x / canX, y / canY) + ")";
     document.body.style.height = y + "px";
-    let scaleFactor = Math.min(x / canX, y / canY);
+    scaleFactor = Math.min(x / canX, y / canY);
 
     /*if (x/canX < y/canY) {
       document.body.style.margin = (((y - (canY*scaleFactor))/2) + "px 0px 0px 0px");
@@ -20,6 +24,19 @@ function scaleWindow() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.translate(can.width / 2, can.height / 2);
     ctx.scale(1 * screenScale, 1 * screenScale);
+    canObj = can.getBoundingClientRect();
+    if (x / canX > y / canY) {
+        bigSide = 'x';
+        //sideOffset = ((x*scaleFactor) - canX * scaleFactor)*scaleFactor;
+        sideOffset = canObj.left/scaleFactor;
+        //sideOffset = x-((canX/2)*scaleFactor);
+        //sideOffset = 178;
+    }
+    else {
+        bigSide = 'y';
+        //sideOffset = y-(canY*scaleFactor);
+        sideOffset = canObj.top/scaleFactor;
+    }
 }
 window.onload = function () {
     scaleWindow();
@@ -28,22 +45,14 @@ window.onload = function () {
 
 
 //mouse functions
-var clicked = false;
-var clickedX = 0;
-var clickedY = 0;
-var clickTimer = 0;
+mouseIsDown = false;
 
 function mouseDown() {
-    if (clicked === false) {
-        clickedX = mouseX;
-        clickedY = mouseY;
-    }
-    clicked = true;
+    mouseIsDown = true;
 }
 
 function mouseUp() {
-    clicked = false;
-    clickTimer = 0.5;
+    mouseIsDown = false;
 }
 
 
@@ -70,9 +79,14 @@ function mouseUp() {
                 (doc && doc.clientTop || body && body.clientTop || 0);
         }
 
-        mouseX = event.pageX * screenScale - (canX / 2);
-        mouseY = (event.pageY * screenScale - (canY / 2)) * -1;
-        //console.log(mouseX + "," + mouseY)
+        if (bigSide === 'x') {
+            mouseX = (event.pageX * screenScale) / scaleFactor - (canX / 2) - sideOffset;
+            mouseY = (event.pageY * screenScale) / scaleFactor - (canY / 2);
+        }
+        else {
+            mouseX = (event.pageX * screenScale) / scaleFactor - (canX / 2);
+            mouseY = ((event.pageY * screenScale) / scaleFactor - (canY / 2)) - sideOffset;
+        }
     }
 })();
 
@@ -117,6 +131,7 @@ function tileToWorldTile(x,y) {
 }
 
 function deleteTile(testX1,testY) {
-    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
+    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = 0;
+    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = 'air';
     drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
 }

@@ -33,6 +33,10 @@ function mainLoop() {
     //console.log(pixelVal.charAt(0));
     //pixelToWorldTile(player.x,player.y)
     outline(Math.floor(player.x/256),Math.floor(player.y/-256));
+    ctx.fillRect(mouseX,mouseY,5,5);
+    if (mouseIsDown) {
+        deleteTile(player.x+mouseX,player.y-mouseY);
+    }
 }
 
 

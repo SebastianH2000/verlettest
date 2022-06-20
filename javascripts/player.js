@@ -20,17 +20,16 @@ var player = {
         this.windowX2 = Math.ceil((this.x + (canX / 2)) / 256) + 1;
         this.windowY2 = Math.ceil((this.y + (canY / 2)) / 256) + 1;
 
-        if (pixelToWorldTile(this.x,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x-16,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x+16,this.y-32).charAt(0) === '2' || pixelToWorldTile(this.x,this.y-24).charAt(0) === '2' || pixelToWorldTile(this.x-16,this.y-24).charAt(0) === '2' || pixelToWorldTile(this.x+16,this.y-24).charAt(0) === '2') {
+        if (pixelToWorldTile(this.x,this.y-32).materialType === 2 || pixelToWorldTile(this.x-16,this.y-32).materialType === 2 || pixelToWorldTile(this.x+16,this.y-32).materialType === 2 || pixelToWorldTile(this.x,this.y-24).materialType === 2 || pixelToWorldTile(this.x-16,this.y-24).materialType === 2 || pixelToWorldTile(this.x+16,this.y-24).materialType === 2) {
             this.underwater = true;
         }
         else {
             if (this.underwater && this.velY > 0) {
-                console.log('heeh')
                 this.velY --;
             }
             this.underwater = false;
         }
-        if (pixelToWorldTile(this.x,this.y-32).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-32).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-32).charAt(0) === '1') {
+        if (pixelToWorldTile(this.x,this.y-32).materialType === 1 || pixelToWorldTile(this.x-16,this.y-32).materialType === 1 || pixelToWorldTile(this.x+16,this.y-32).materialType === 1) {
             this.isGrounded = true;
         }
         else {
@@ -45,10 +44,10 @@ var player = {
             else if (this.velY < 0) {
                 this.velY = 0;
             }
-            if (pixelToWorldTile(this.x,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-20).charAt(0) === '1') {
+            if (pixelToWorldTile(this.x,this.y-20).materialType === 1 || pixelToWorldTile(this.x-16,this.y-20).materialType === 1 || pixelToWorldTile(this.x+16,this.y-20).materialType === 1) {
                 this.y += 8;
             }
-            else if (pixelToWorldTile(this.x,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-30).charAt(0) === '1') {
+            else if (pixelToWorldTile(this.x,this.y-30).materialType === 1 || pixelToWorldTile(this.x-16,this.y-30).materialType === 1 || pixelToWorldTile(this.x+16,this.y-30).materialType === 1) {
                 this.y += 2;
             }
         }
@@ -65,10 +64,10 @@ var player = {
             else if (this.velY < 0) {
                 this.velY = 0;
             }
-            if (pixelToWorldTile(this.x,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-20).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-20).charAt(0) === '1') {
+            if (pixelToWorldTile(this.x,this.y-20).materialType === 1 || pixelToWorldTile(this.x-16,this.y-20).materialType === 1 || pixelToWorldTile(this.x+16,this.y-20).materialType === 1) {
                 this.y += 8;
             }
-            else if (pixelToWorldTile(this.x,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x-16,this.y-30).charAt(0) === '1' || pixelToWorldTile(this.x+16,this.y-30).charAt(0) === '1') {
+            else if (pixelToWorldTile(this.x,this.y-30).materialType === 1 || pixelToWorldTile(this.x-16,this.y-30).materialType === 1 || pixelToWorldTile(this.x+16,this.y-30).materialType === 1) {
                 this.y += 2;
             }
         }
@@ -103,11 +102,14 @@ function playerDown() {
         player.y -= 5;
     }
     else {
-        let testX1 = player.x;
+        /*let testX1 = player.x;
         let testX2 = player.x;
-        let testX3 = player.x;
+        let testX3 = player.x;*/
+        let testX1 = player.x;
+        let testX2 = player.x-16;
+        let testX3 = player.x+16;
         let testY = player.y-32;
-        if (pixelToWorldTile(testX1,testY).charAt(0) !== '0' || pixelToWorldTile(testX2,testY).charAt(0) !== '0' || pixelToWorldTile(testX3,testY).charAt(0) !== '0') {
+        if (pixelToWorldTile(testX1,testY).materialType !== 0 || pixelToWorldTile(testX2,testY).materialType !== 0 || pixelToWorldTile(testX3,testY).materialType !== 0) {
             /*World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
             World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)] = '0000';
             drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
@@ -127,10 +129,10 @@ function playerRight() {
     if (player.spectate) {
         player.x += 5;
     }
-    if (pixelToWorldTile(player.x+19,player.y-8).charAt(0) !== '1') {
+    if (pixelToWorldTile(player.x+19,player.y-8).materialType !== 1) {
         player.x += 5;
     }
-    else if (pixelToWorldTile(player.x+16,player.y-8).charAt(0) === '1') {
+    else if (pixelToWorldTile(player.x+16,player.y-8).materialType !== 1) {
         player.x--;
     }
 }
@@ -140,10 +142,10 @@ function playerLeft() {
     if (player.spectate) {
         player.x -= 5;
     }
-    if (pixelToWorldTile(player.x-19,player.y-8).charAt(0) !== '1') {
+    if (pixelToWorldTile(player.x-19,player.y-8).materialType !== 1) {
         player.x -= 5;
     }
-    else if (pixelToWorldTile(player.x-16,player.y-8).charAt(0) === '1') {
+    else if (pixelToWorldTile(player.x-16,player.y-8).materialType !== 1) {
         player.x++;
     }
 }
