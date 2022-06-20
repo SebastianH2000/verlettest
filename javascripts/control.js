@@ -45,16 +45,29 @@ window.onload = function () {
 
 
 //mouse functions
-mouseIsDown = false;
+var mouseRIsDown = false;
+var mouseLIsDown = false;
 
-function mouseDown() {
-    mouseIsDown = true;
+function mouseDown(val) {
+    if (val === 0) {
+        mouseLIsDown = true;
+    }
+    else if (val === 2) {
+        mouseRIsDown = true;
+    }
 }
 
-function mouseUp() {
-    mouseIsDown = false;
+function mouseUp(val) {
+    if (val === 0) {
+        mouseLIsDown = false;
+    }
+    else if (val === 2) {
+        mouseRIsDown = false;
+    }
 }
 
+var mouseX = 0;
+var mouseY = 0;
 
 (function () {
     document.onmousemove = handleMouseMove;
@@ -80,12 +93,16 @@ function mouseUp() {
         }
 
         if (bigSide === 'x') {
-            mouseX = (event.pageX * screenScale) / scaleFactor - (canX / 2) - sideOffset;
-            mouseY = (event.pageY * screenScale) / scaleFactor - (canY / 2);
+            mouseX = (event.pageX / screenScale) / scaleFactor - ((canX / 2)/screenScale) - (sideOffset/screenScale);
+            mouseY = (event.pageY / screenScale) / scaleFactor - ((canY / 2)/screenScale);
+            /*mouseX = (event.pageX * screenScale) / scaleFactor - (canX / 2) - sideOffset;
+            mouseY = (event.pageY * screenScale) / scaleFactor - (canY / 2);*/
         }
         else {
-            mouseX = (event.pageX * screenScale) / scaleFactor - (canX / 2);
-            mouseY = ((event.pageY * screenScale) / scaleFactor - (canY / 2)) - sideOffset;
+            mouseX = (event.pageX / screenScale) / scaleFactor - ((canX / 2)/screenScale);
+            mouseY = (event.pageY / screenScale) / scaleFactor - ((canY / 2)/screenScale) - (sideOffset/screenScale);
+            /*mouseX = (event.pageX / screenScale) / scaleFactor - (canX / 2);
+            mouseY = ((event.pageY / screenScale) / scaleFactor - (canY / 2)) - sideOffset;*/
         }
     }
 })();
@@ -134,4 +151,12 @@ function deleteTile(testX1,testY) {
     World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = 0;
     World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = 'air';
     drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+}
+
+function placeTile(testX1,testY) {
+    if (pixelToWorldTile(testX1,testY).materialType !== 1) {
+        World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = 1;
+        World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = 'dirt';
+        drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+    }
 }

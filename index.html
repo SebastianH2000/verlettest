@@ -8,9 +8,9 @@
 
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div id="canvasStorage" style="display: none"></div>
-    <canvas id="myCanvas" onmousedown="mouseDown()" onmouseup="mouseUp()"></canvas>
+    <canvas id="myCanvas" onmousedown="mouseDown(event.button)" onmouseup="mouseUp(event.button)"></canvas>
     <script type="text/javascript" src="javascripts/control.js"></script>
     <script type="text/javascript" src="javascripts/perlin.js"></script>
     <script type="text/javascript" src="javascripts/vector.js"></script>

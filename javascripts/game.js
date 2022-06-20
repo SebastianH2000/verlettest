@@ -32,9 +32,16 @@ function mainLoop() {
     //console.log(pixelToWorldTile(player.x,player.y-32).charAt(0));
     //console.log(pixelVal.charAt(0));
     //pixelToWorldTile(player.x,player.y)
-    outline(Math.floor(player.x/256),Math.floor(player.y/-256));
-    ctx.fillRect(mouseX,mouseY,5,5);
-    if (mouseIsDown) {
+    if (player.spectate) {
+        outline(Math.floor(player.x/256),Math.floor(player.y/-256));
+        ctx.fillRect(mouseX,mouseY,5,5);
+    }
+    if (mouseLIsDown) {
+        if ((mouseX > 16 || mouseX < -16) || (mouseY > 32 || mouseY < -32)) {
+            placeTile(player.x+mouseX,player.y-mouseY);
+        }
+    }
+    else if (mouseRIsDown) {
         deleteTile(player.x+mouseX,player.y-mouseY);
     }
 }
