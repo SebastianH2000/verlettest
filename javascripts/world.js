@@ -1,8 +1,8 @@
 var World = [];
 
-//var noiseSeed = Math.random()*1000;
+var noiseSeed = Math.random()*1000;
 //var noiseSeed = 680.178573998786;
-var noiseSeed = 977.4558480555837;
+//var noiseSeed = 977.4558480555837;
 var noiseSeed2 = noiseSeed/120;
 
 var spawnY = 0;

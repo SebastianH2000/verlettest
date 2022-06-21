@@ -3,6 +3,8 @@ var player = {
     y: 0,
     velX: 0,
     velY: 0,
+    maxXVel: 5,
+    gravity: 0.2,
     chunkX: Math.round(this.x / 256),
     chunkY: Math.round(this.y / 256),
     windowX1: Math.floor((this.x - (canX / 2)) / 256) - 1,
@@ -13,6 +15,9 @@ var player = {
     isGrounded: true,
     underwater: false,
     tileAbove: false,
+    tileBelow: false,
+    tileLeft: false,
+    tileRight: false,
     calcStats(val) {
         this.chunkX = Math.round(this.x / 256);
         this.chunkY = Math.round(this.y / 256);
@@ -34,59 +39,82 @@ var player = {
             }
             this.underwater = false;
         }
-        if (pixelToWorldTile(this.x,this.y-32).materialType === 1 || pixelToWorldTile(this.x-16,this.y-32).materialType === 1 || pixelToWorldTile(this.x+16,this.y-32).materialType === 1) {
+        if (pixelToWorldTile(this.x,this.y-33).materialType === 1 || pixelToWorldTile(this.x-15,this.y-33).materialType === 1 || pixelToWorldTile(this.x+15,this.y-33).materialType === 1) {
             this.isGrounded = true;
         }
         else {
             this.isGrounded = false;
         }
-        if (pixelToWorldTile(this.x-16,this.y+32+Math.max(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x,this.y+32+Math.max(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x+16,this.y+32+Math.max(player.velY,0)).materialType === 1) {
+        if (pixelToWorldTile(this.x-15,this.y+32+Math.max(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x,this.y+32+Math.max(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x+15,this.y+32+Math.max(player.velY,0)).materialType === 1) {
             this.tileAbove = true;
         }
-        else if (pixelToWorldTile(this.x-16,this.y+40).materialType !== 1 && pixelToWorldTile(this.x,this.y+40).materialType !== 1 && pixelToWorldTile(this.x+16,this.y+40).materialType !== 1) {
+        else if (pixelToWorldTile(this.x-15,this.y+40).materialType !== 1 && pixelToWorldTile(this.x,this.y+40).materialType !== 1 && pixelToWorldTile(this.x+15,this.y+40).materialType !== 1) {
             this.tileAbove = false;
+        }
+        if (pixelToWorldTile(this.x-15,this.y-32+Math.min(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x,this.y-32+Math.min(player.velY,0)).materialType === 1 || pixelToWorldTile(this.x+15,this.y-32+Math.min(player.velY,0)).materialType === 1) {
+            this.tileBelow = true;
+        }
+        else if (pixelToWorldTile(this.x-15,this.y-40).materialType !== 1 && pixelToWorldTile(this.x,this.y-40).materialType !== 1 && pixelToWorldTile(this.x+15,this.y-40).materialType !== 1) {
+            this.tileBelow = false;
+        }
+        if (pixelToWorldTile(this.x-16+Math.min(player.velX,0),this.y-12).materialType === 1 || pixelToWorldTile(this.x-16+Math.min(player.velX,0),this.y).materialType === 1 || pixelToWorldTile(this.x-16+Math.min(player.velX,0),this.y+16).materialType === 1 || pixelToWorldTile(this.x-16+Math.min(player.velX,0),this.y+31).materialType === 1) {
+            this.tileLeft = true;
+        }
+        else if (pixelToWorldTile(this.x-24,this.y-12).materialType !== 1 && pixelToWorldTile(this.x-24,this.y).materialType !== 1 && pixelToWorldTile(this.x-24,this.y+16).materialType !== 1 && pixelToWorldTile(this.x-24,this.y+31).materialType !== 1) {
+            this.tileLeft = false;
+        }
+        if (pixelToWorldTile(this.x+16+Math.max(player.velX,0),this.y-12).materialType === 1 || pixelToWorldTile(this.x+16+Math.max(player.velX,0),this.y).materialType === 1 || pixelToWorldTile(this.x+16+Math.max(player.velX,0),this.y+16).materialType === 1 || pixelToWorldTile(this.x+16+Math.max(player.velX,0),this.y+31).materialType === 1) {
+            this.tileRight = true;
+        }
+        else if (pixelToWorldTile(this.x+24,this.y-12).materialType !== 1 && pixelToWorldTile(this.x+24,this.y).materialType !== 1 && pixelToWorldTile(this.x+24,this.y+16).materialType !== 1 && pixelToWorldTile(this.x+24,this.y+31).materialType !== 1) {
+            this.tileRight = false;
         }
     },
     applyPhysics() {
-        if (!this.underwater) { 
-            if (!this.isGrounded) {
-                this.velY -= 0.2;
-            }
-            else if (this.velY < 0) {
-                this.velY = 0;
-            }
-            /*if (pixelToWorldTile(this.x,this.y-20).materialType === 1 || pixelToWorldTile(this.x-16,this.y-20).materialType === 1 || pixelToWorldTile(this.x+16,this.y-20).materialType === 1) {
-                this.y += 8;
-            }
-            else if (pixelToWorldTile(this.x,this.y-30).materialType === 1 || pixelToWorldTile(this.x-16,this.y-30).materialType === 1 || pixelToWorldTile(this.x+16,this.y-30).materialType === 1) {
-                this.y += 2;
-            }*/
+        if (player.velY < 0 && this.tileBelow) {
+            player.velY = 0;
+            player.y = Math.min(Math.floor((player.y+1)/16)*16);
+        }
+        else if (!this.tileBelow) {
+            player.velY -= player.gravity;
+        }
+        if (this.underwater && player.velY < -3.5) {
+            player.velY = -3.5;
+        }
+
+        //check left side for bumps
+        if (player.velX < 0 && this.tileLeft) {
+            player.velX = 0;
+            player.x = Math.min(Math.floor((player.x)/16)*16,player.x+player.velX);
+        }
+
+        //check right side for bumps
+        else if (player.velX > 0 && this.tileRight) {
+            player.velX = 0;
+            player.x = Math.min(Math.ceil((player.x)/16)*16,player.x+player.velX);
         }
         else {
-            //console.log(this.isGrounded)
-            if (!this.isGrounded) {
-                if (this.velY < -3.5) {
-                    this.velY = -3.5;
+            player.x += player.velX;
+            if (player.isGrounded && !this.tileAbove) {
+                if (!this.tileAbove && pixelToWorldTile(this.x,this.y-26).materialType === 1 || pixelToWorldTile(this.x-15+Math.min(this.velX,0),this.y-26).materialType === 1 || pixelToWorldTile(this.x+15+Math.max(this.velX,0),this.y-26).materialType === 1) {
+                    this.y += 8;
+                    console.log('bigs');
                 }
-                else {
-                    this.velY -= 0.075;
+                else if (!this.tileAbove && pixelToWorldTile(this.x,this.y-30).materialType === 1 || pixelToWorldTile(this.x-15+Math.min(this.velX,0),this.y-30).materialType === 1 || pixelToWorldTile(this.x+15+Math.max(this.velX,0),this.y-30).materialType === 1) {
+                    //this.y += 2;
                 }
-            }
-            else if (this.velY < 0) {
-                this.velY = 0;
-            }
-        }
-        if (player.isGrounded) {
-            if (!this.tileAbove && pixelToWorldTile(this.x,this.y-20).materialType === 1 || pixelToWorldTile(this.x-16,this.y-20).materialType === 1 || pixelToWorldTile(this.x+16,this.y-20).materialType === 1) {
-                this.y += 8;
-            }
-            else if (!this.tileAbove && pixelToWorldTile(this.x,this.y-30).materialType === 1 || pixelToWorldTile(this.x-16,this.y-30).materialType === 1 || pixelToWorldTile(this.x+16,this.y-30).materialType === 1) {
-                this.y += 2;
             }
         }
 
-        player.x += player.velX;
+        //add friction
+        if (player.velX < 0) {
+            player.velX = Math.min(player.velX+0.5,0);
+        }
+        else if (player.velX > 0) {
+            player.velX = Math.max(player.velX-0.5,0);
+        }
 
+        //check head for bumps
         if (player.velY > 0 && this.tileAbove) {
             player.velY = 0;
             player.y = Math.max(Math.floor((player.y+16)/16)*16,player.y+player.velY);
@@ -150,12 +178,19 @@ function playerRight() {
     if (player.spectate) {
         player.x += 5;
     }
-    if (pixelToWorldTile(player.x+19,player.y-8).materialType !== 1) {
+    else if (!player.tileRight){
+        player.velX++;
+        player.velX = Math.min(player.velX,player.maxXVel);
+    }
+    else {
+        player.x = Math.max(Math.ceil((player.x)/16)*16,player.x+player.velX);
+    }
+    /*if (pixelToWorldTile(player.x+19,player.y-8).materialType !== 1) {
         player.x += 5;
     }
     else if (pixelToWorldTile(player.x+16,player.y-8).materialType === 1 || pixelToWorldTile(player.x+16,player.y+8).materialType === 1 || pixelToWorldTile(player.x+16,player.y+24).materialType === 1 || pixelToWorldTile(player.x+16,player.y+32).materialType === 1) {
         player.x--;
-    }
+    }*/
 }
 
 function playerLeft() {
@@ -163,11 +198,9 @@ function playerLeft() {
     if (player.spectate) {
         player.x -= 5;
     }
-    if (pixelToWorldTile(player.x-19,player.y-8).materialType !== 1) {
-        player.x -= 5;
-    }
-    else if (pixelToWorldTile(player.x-16,player.y-8).materialType === 1 || pixelToWorldTile(player.x-16,player.y+8).materialType === 1 || pixelToWorldTile(player.x-16,player.y+24).materialType === 1 || pixelToWorldTile(player.x-16,player.y+32).materialType === 1) {
-        player.x++;
+    else {
+        player.velX--;
+        player.velX = Math.max(player.velX,0-player.maxXVel);
     }
 }
 
