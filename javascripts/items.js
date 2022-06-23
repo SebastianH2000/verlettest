@@ -78,12 +78,10 @@ function addItem (materialName,materialAmount) {
             player.inventory[i].amount += materialAmount;
         }
         else if (player.inventory[i].material === undefined) {
-            console.log(firstEmpty)
             firstEmpty = Math.min(firstEmpty,i);
         }
     }
     if (!foundItem && firstEmpty < 10) {
-        console.log('foundSimilar ' + firstEmpty)
         player.inventory[firstEmpty].material = materialName;
         player.inventory[firstEmpty].amount = materialAmount;
     }
@@ -93,8 +91,10 @@ function subItem (materialName,materialAmount) {
     for (let i = 0; i < player.inventory.length; i++) {
         if (player.inventory[i].material === materialName && (player.inventory[i].amount - materialAmount) > 0) {
             player.inventory[i].amount -= materialAmount;
+            console.log('ha');
         }
-        else if (!(player.inventory[i].amount - materialAmount) > 0) {
+        else if ((player.inventory[i].amount - materialAmount) <= 0) {
+            console.log('he')
             player.inventory[i] = {};
         }
     }

@@ -158,12 +158,13 @@ function deleteTile(testX1,testY) {
 }
 
 function placeTile(testX1,testY) {
-    if (pixelToWorldTile(testX1,testY).materialType !== 1) {
+    if (pixelToWorldTile(testX1,testY).materialType === 0) {
         if (player.inventory[player.hotbarSelect].amount > 0) {
             World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = tileData[player.inventory[player.hotbarSelect].material].type;
             World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = player.inventory[player.hotbarSelect].material;
             drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
-            player.inventory[player.hotbarSelect].amount--;
+            //player.inventory[player.hotbarSelect].amount--;
+            subItem(player.inventory[player.hotbarSelect].material,1);
         }
     }
 }

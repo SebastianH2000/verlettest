@@ -127,7 +127,7 @@ function drawWorldCan(x, y) {
             World[toBijective(x)][toBijective(y)].ctx.clearRect(0,0,256,256);
             for (let q = 1; q < 17; q++) {
                 for (let w = 1; w < 17; w++) {
-                    let thisY = Math.abs((y*16)+w);
+                    let thisY = ((y*16)+w);
                     let thisBlock = World[toBijective(x)][toBijective(y)]['x' + q + 'y' + w];
                     /*if (lastChunkX === x && lastChunkY === y) {
                         thisBlock = lastChunkPiece['x' + q + 'y' + w];
@@ -175,8 +175,12 @@ function drawWorldCan(x, y) {
                             fillTrue = true;
                         }
                         else if (thisBlock.material === 'water') {
-                            //World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
-                            World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(0, 0, Math.max(255-thisY*3,0));
+                            if (thisY > 0) {
+                                World[toBijective(x)][toBijective(y)].ctx.fillStyle = 'blue';
+                            }
+                            else {
+                                World[toBijective(x)][toBijective(y)].ctx.fillStyle = rgbToHex(0, 0, Math.min(Math.max(255+thisY*3,0),255));
+                            }
                             fillTrue = true;
                         }
                         else if (thisBlock.material === 'grass') {

@@ -1,18 +1,13 @@
-//ctx.fillRect(0,0,canX,canY);
-
-
-scaleWindow();
-ctx.fillStyle = "white";
-ctx.fillRect(0-canX/2,0-canY/2,canX,canY);
+var loaded = false;
 
 setInterval(mainLoop,20);
 function mainLoop() {
     scaleWindow();
-    checkPlayerMovement();
+    if (loaded) checkPlayerMovement();
     clearCanvas();
     drawWorld();
     //drawWorld();
-    playerOnMove();
+    if (loaded) playerOnMove();
     //World[0][0].ctx.fillStyle = "black";
     //World[0][0].ctx.fillRect(0,0,50,50);
 
@@ -45,6 +40,7 @@ function mainLoop() {
         deleteTile(player.x+mouseX,player.y-mouseY);
     }
     drawHotbar();
+    window.scrollTo(0, 0);
 }
 
 
@@ -69,5 +65,5 @@ function mainLoop() {
 setInterval(mainLoop,20);*/
 
 window.onload = function() {
-    //playerOnMove();
+    loaded = true;
 }
