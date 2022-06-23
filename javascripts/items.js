@@ -48,8 +48,18 @@ function drawHotbar() {
             ctx.fillStyle = tileData[player.inventory[i].material].color;
             ctx.fillRect(0+((i-4)*60),260,60,60);
             ctx.fillStyle = 'white';
-            ctx.font = "30px Arial";
-            ctx.fillText(player.inventory[i].amount, -230+(i*60), 300);
+            if (player.inventory[i].amount < 1000) {
+                ctx.font = "30px Arial";
+                ctx.fillText(player.inventory[i].amount, -230+(i*60), 300);
+            }
+            else if (player.inventory[i].amount < 10000) {
+                ctx.font = "20px Arial";
+                ctx.fillText(player.inventory[i].amount, -230+(i*60), 295);
+            }
+            else {
+                ctx.font = "16px Arial";
+                ctx.fillText('MANY', -235+(i*60), 295);
+            }
         }
     }
     for (let i = -4; i < 5; i++) {
@@ -91,10 +101,8 @@ function subItem (materialName,materialAmount) {
     for (let i = 0; i < player.inventory.length; i++) {
         if (player.inventory[i].material === materialName && (player.inventory[i].amount - materialAmount) > 0) {
             player.inventory[i].amount -= materialAmount;
-            console.log('ha');
         }
         else if ((player.inventory[i].amount - materialAmount) <= 0) {
-            console.log('he')
             player.inventory[i] = {};
         }
     }

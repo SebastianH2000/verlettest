@@ -3,6 +3,7 @@ var World = [];
 var noiseSeed = Math.random()*1000;
 //var noiseSeed = 680.178573998786;
 //var noiseSeed = 977.4558480555837;
+//var noiseSeed = 420;
 var noiseSeed2 = noiseSeed/120;
 
 var spawnY = 0;
@@ -70,6 +71,35 @@ function createChunk(x, y) {
             else {
                 World[x][y]['x' + i + 'y' + j].materialType = 1;
                 World[x][y]['x' + i + 'y' + j].material = 'stone';
+            }
+
+            let skyHeight = Math.max(heightMap,0) + 100
+            let skyInc = Math.min(((yCoord - skyHeight)-20)/30,0.2);
+            if (yCoord > skyHeight) {
+                if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > (0.85 - Math.min(skyInc*5,0.2)) && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 2;
+                    World[x][y]['x' + i + 'y' + j].material = 'water';
+                }
+                else if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > (0.8 - Math.min(skyInc*5,0.2)) && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 1;
+                    World[x][y]['x' + i + 'y' + j].material = 'gold';
+                }
+                else if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > (0.75 - Math.min(skyInc*5,0.2)) && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 1;
+                    World[x][y]['x' + i + 'y' + j].material = 'iron';
+                }
+                else if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > (0.7 - Math.min(skyInc*3,0.2)) && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 1;
+                    World[x][y]['x' + i + 'y' + j].material = 'coal';
+                }
+                else if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > (0.5 - skyInc) && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 1;
+                    World[x][y]['x' + i + 'y' + j].material = 'stone';
+                }
+                else if (yCoord > skyHeight && ImprovedNoise.noise(xCoord/30,yCoord/30,noiseSeed) > 0.2 && yCoord > 0) {
+                    World[x][y]['x' + i + 'y' + j].materialType = 1;
+                    World[x][y]['x' + i + 'y' + j].material = 'dirt';
+                }
             }
         }
     }
