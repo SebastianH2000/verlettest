@@ -44,6 +44,7 @@ function mainLoop() {
     else if (mouseRIsDown) {
         deleteTile(player.x+mouseX,player.y-mouseY);
     }
+    drawHotbar();
 }
 
 

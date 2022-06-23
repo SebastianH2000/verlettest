@@ -26,7 +26,7 @@ function createChunk(x, y) {
 
             if (x === 0 && y === 0 && i === 1 ) {
                 spawnY = Math.max(Math.max(Math.floor(heightMap)*16-224,-240),spawnY);
-                player.y = spawnY+256;
+                player.y = spawnY;
             } else if (x === 2 && y === 0 && i === 16 ) {
                 spawnY = Math.max(Math.floor(heightMap)*16-224,-256);
             }

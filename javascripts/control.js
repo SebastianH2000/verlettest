@@ -148,15 +148,22 @@ function tileToWorldTile(x,y) {
 }
 
 function deleteTile(testX1,testY) {
-    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = 0;
-    World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = 'air';
-    drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+    let thisWorldTile = World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)];
+    if (thisWorldTile.material !== 'air') {
+        addItem(thisWorldTile.material,1);
+        thisWorldTile.materialType = 0;
+        thisWorldTile.material = 'air';
+        drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+    }
 }
 
 function placeTile(testX1,testY) {
     if (pixelToWorldTile(testX1,testY).materialType !== 1) {
-        World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = 1;
-        World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = 'dirt';
-        drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+        if (player.inventory[player.hotbarSelect].amount > 0) {
+            World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = tileData[player.inventory[player.hotbarSelect].material].type;
+            World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = player.inventory[player.hotbarSelect].material;
+            drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
+            player.inventory[player.hotbarSelect].amount--;
+        }
     }
 }

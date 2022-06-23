@@ -18,6 +18,16 @@ var player = {
     tileBelow: false,
     tileLeft: false,
     tileRight: false,
+    inventory: [{},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},],
+    hotbarSelect: 0,
     calcStats(val) {
         this.chunkX = Math.round(this.x / 256);
         this.chunkY = Math.round(this.y / 256);
@@ -249,6 +259,37 @@ function checkPlayerMovement() {
     if ((map[83] === true || map[40] === true) && (map[68] === true || map[39] === true)) {
         playerDown();
         playerRight();
+    }
+
+    if (map[49]) {
+        player.hotbarSelect = 0;
+    }
+    else if (map[50]) {
+        player.hotbarSelect = 1;
+    }
+    else if (map[51]) {
+        player.hotbarSelect = 2;
+    }
+    else if (map[52]) {
+        player.hotbarSelect = 3;
+    }
+    else if (map[53]) {
+        player.hotbarSelect = 4;
+    }
+    else if (map[54]) {
+        player.hotbarSelect = 5;
+    }
+    else if (map[55]) {
+        player.hotbarSelect = 6;
+    }
+    else if (map[56]) {
+        player.hotbarSelect = 7;
+    }
+    else if (map[57]) {
+        player.hotbarSelect = 8;
+    }
+    else if (map[58]) {
+        player.hotbarSelect = 9;
     }
 }
 
