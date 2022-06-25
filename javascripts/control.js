@@ -3,6 +3,13 @@ var scaleFactor = 1;
 var bigSide = 1;
 var sideOffset = 1;
 var canObj = {};
+
+var noiseSeed = Math.floor(Math.random()*1000000);
+
+while (noiseSeed < 100000) {
+    noiseSeed *= 10;
+}
+
 function scaleWindow() {
     document.body.style.transform = "scale(1)";
     let win = window,
@@ -47,8 +54,20 @@ window.onload = function () {
 //mouse functions
 var mouseRIsDown = false;
 var mouseLIsDown = false;
+var scrubMode = false;
+var pressedLeft = false;
+var pressedRight = false;
 
 function mouseDown(val) {
+    if (mouseY < 0) {
+        scrubMode = !scrubMode;
+    }
+    if (mouseX < -480) {
+        pressedLeft = true;
+    }
+    else if (mouseX > 480) {
+        pressedRight = true;
+    }
     if (val === 0) {
         mouseLIsDown = true;
     }
@@ -64,6 +83,8 @@ function mouseUp(val) {
     else if (val === 2) {
         mouseRIsDown = false;
     }
+    pressedLeft = false;
+    pressedRight = false;
 }
 
 var mouseX = 0;
@@ -132,39 +153,27 @@ function absMod(n, m) {
     return ((n % m) + m) % m;
 }
 
-function pixelToWorldTile(x,y) {
-    return tileToWorldTile(Math.floor(x/16),Math.floor((y+256)/16));
+padNum = function(value, n) {
+    return new Array(n).join('0').slice((n || 2) * -1) + value;
 }
 
-function tileToWorldTile(x,y) {
-    let xPos = toBijective(Math.floor(x/16));
-    let yPos = toBijective(Math.floor(y/16));
-    //console.log(World[xPos][yPos])
-    //console.log("x" + Math.floor(absMod(x,16)+1) + "y" + Math.floor(absMod(y,16)+1));
-    return World[xPos][yPos]["x" + Math.floor(absMod(x,16)+1) + "y" + Math.floor(absMod(y,16)+1)];
-    //console.log(xPos + "," + yPos);
-    //console.log(World[xPos][yPos]["x" + ((x%16)+1) + "y" + ((y%16)+1)]);
-    //return World[xPos][yPos]["x" + () + "y" + (toBijective((y%16)+1))];
-}
+var map = {}; // You could also use an array
+//wsad
+map[87] = false;
+map[83] = false;
+map[65] = false;
+map[68] = false;
 
-function deleteTile(testX1,testY) {
-    let thisWorldTile = World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)];
-    if (thisWorldTile.material !== 'air') {
-        addItem(thisWorldTile.material,1);
-        thisWorldTile.materialType = 0;
-        thisWorldTile.material = 'air';
-        drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
-    }
-}
+//^v<>
+map[38] = false;
+map[40] = false;
+map[37] = false;
+map[39] = false;
 
-function placeTile(testX1,testY) {
-    if (pixelToWorldTile(testX1,testY).materialType === 0) {
-        if (player.inventory[player.hotbarSelect].amount > 0) {
-            World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].materialType = tileData[player.inventory[player.hotbarSelect].material].type;
-            World[toBijective(Math.floor(testX1/256))][toBijective(Math.floor(testY/256)+1)]["x" + Math.floor(absMod(Math.floor(testX1/16),16)+1) + "y" + Math.floor(absMod(Math.floor(testY/16),16)+1)].material = player.inventory[player.hotbarSelect].material;
-            drawWorldCan(Math.floor(testX1/256),Math.floor(testY/256)+1);
-            //player.inventory[player.hotbarSelect].amount--;
-            subItem(player.inventory[player.hotbarSelect].material,1);
-        }
-    }
+map[32] = false;
+
+onkeydown = onkeyup = function (e) {
+    e = e || event; // to deal with IE
+    map[e.keyCode] = e.type == 'keydown';
+    /* insert conditional here */
 }

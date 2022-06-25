@@ -7,7 +7,7 @@ can.width = canX;
 can.height = canY;
 
 
-var screenScale = 1.25;
+var screenScale = 1;
 
 
 
@@ -26,9 +26,16 @@ function rgbToHex(r, g, b) {
     }
 }
 
-function clearCanvas() {
-    ctx.fillStyle = "cyan";
-    ctx.fillRect(0 - (canX / 2)/screenScale, 0 - (canY / 2)/screenScale, canX/screenScale, canY/screenScale);
+function clearCanvas(color,id,x,y) {
+    let ctxId = id || ctx;
+    if (ctxId !== ctx) {
+        ctxId.fillStyle = color;
+        ctxId.fillRect(0, 0, x, y);
+    }
+    else {
+        ctxId.fillStyle = color;
+        ctxId.fillRect(0 - (canX / 2)/screenScale, 0 - (canY / 2)/screenScale, canX/screenScale, canY/screenScale);
+    }
 }
 
 function drawSquare(x1, y1, size, ctxObj) {
@@ -44,12 +51,19 @@ function drawSquare(x1, y1, size, ctxObj) {
     }
 }
 
-function newCanvas(id,divId) {
+function drawCircle(x,y,r,ctxObj) {
+    ctxObj.beginPath();
+    ctxObj.arc(x,y,r,0,360);
+    ctxObj.fill();
+    ctxObj.closePath();
+}
+
+function newCanvas(id,divId,width,height) {
     let canvas = document.createElement("canvas");
     canvas.id = id;
-    canvas.width = 256;
-    canvas.height = 256;
-    document.getElementById("canvasStorage").appendChild(canvas);
+    canvas.width = width;
+    canvas.height = height;
+    document.getElementById(divId).appendChild(canvas);
 };
 
 function outline(x,y) {
