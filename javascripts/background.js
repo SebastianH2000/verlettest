@@ -35,6 +35,8 @@ var frontFogCtx = frontFogCan.getContext('2d');
 frontFogCtx.globalAlpha = 0.25;
 var frontFogColor = 0;
 
+var fogLayerAmt = 3;
+
 function drawFrontFog() {
     let pixelSize = 4;
     var frontFogDensity = limit(((ImprovedNoise.noise(mainTimer/17,noiseSeed,xOff/321)/4+0.1)+humidity-0.5)/2,0,1);
@@ -45,7 +47,7 @@ function drawFrontFog() {
     //frontFogCtx.fillStyle = 'lightgray'
     frontFogCtx.clearRect(0,0,1920,400);
     //frontFogDir = Math.sin(mainTimer/20);
-    for (let w = 2; w < 5; w++) {
+    for (let w = 2; w < fogLayerAmt+2; w++) {
         frontFogCtx.beginPath();
         for (let i = 0; i < 1920/pixelSize; i++) {
             for (let j = 0; j < 400/pixelSize; j++) {

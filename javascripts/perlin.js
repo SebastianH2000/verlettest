@@ -1,4 +1,7 @@
 const p = new Array(512);
+
+var perlinCount = 0;
+
 const permutation = [
   151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140,
   36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234,
@@ -39,6 +42,7 @@ const grad = (hash, x, y, z) => {
 
 class ImprovedNoise {
   static noise(x, y, z) {
+    perlinCount++;
     const X = Math.floor(x) & 255,
       Y = Math.floor(y) & 255,
       Z = Math.floor(z) & 255;

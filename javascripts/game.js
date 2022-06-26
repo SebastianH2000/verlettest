@@ -1,4 +1,4 @@
-var fps = 15;
+var fps = 10;
 var loaded = false;
 
 setInterval(mainLoop,1000/fps);
@@ -17,11 +17,14 @@ var skyLight = {r:0,g:0,b:0};
 var sunlight = {r:0,g:0,b:0};
 
 function mainLoop() {
+    console.log(perlinCount/mainTimer)
     if (fancyMode) {
-        fps = 30;
+        fps = 15;
+        fogLayerAmt = 3;
     }
     else {
         fps = 15;
+        fogLayerAmt = 1;
     }
 
 
