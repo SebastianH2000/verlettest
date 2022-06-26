@@ -12,9 +12,14 @@ var backCtx = backCan.getContext('2d');
 
 var riverChangeAmt = 0;
 
+var riverColor = {r:0,g:0,b:0};
+
 function drawRiver() {
     riverCtx.clearRect(0,0,1920,1080);
-    riverCtx.fillStyle = rgbToHex(skyLight.r/1.5,Math.floor(lerp(0,30,dayLight)+skyLight.g)/2,Math.floor(lerp(20,150,dayLight)+skyLight.b)/2);
+    riverColor.r = Math.floor(skyLight.r/1.5);
+    riverColor.g = Math.floor(lerp(0,30,dayLight)+skyLight.g)/2;
+    riverColor.b = Math.floor(lerp(20,150,dayLight)+skyLight.b)/2;
+    riverCtx.fillStyle = rgbToHex(riverColor.r,riverColor.g,riverColor.b);
     riverCtx.fillRect(0,680,1920,1080);
     riverChangeAmt++;
 
@@ -118,4 +123,15 @@ function drawSky() {
     skyCtx.globalAlpha = 1;
 
     ctx.drawImage(skyCan,0-canX/2,0-canY/2);
+}
+
+function drawBackLayer() {
+    backCtx.clearRect(0,0,1920,500);
+    pixelSize = 4;
+    backCtx.fillStyle = rgbToHex(20,20,40);
+    for (let i = 0; i < 1920/pixelSize; i++) {
+        let currentHeight = Math.floor(   ( ( (ImprovedNoise.noise(0-xOff/200+i/60,noiseSeed,75.32) /2+0.1) *100)+(ImprovedNoise.noise(0-xOff/200+i/60,noiseSeed,982.583)*100)+(ImprovedNoise.noise(0-xOff/200+i/60,noiseSeed,noiseSeed/6039)*250))   /4)*4;
+        backCtx.fillRect(i*pixelSize,500-currentHeight,pixelSize,currentHeight);
+    }
+    ctx.drawImage(backCan,0-canX/2,0-canY/2+180);
 }

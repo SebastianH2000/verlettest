@@ -191,3 +191,17 @@ onkeydown = onkeyup = function (e) {
     map[e.keyCode] = e.type == 'keydown';
     /* insert conditional here */
 }
+
+function getHeightMap(xCoord,yOffset) {
+    let heightMap = 0;
+    let octaveAmt = 5;
+    let yOff = 0;
+    if (yOffset !== undefined) yOff = yOffset;
+    for (let a = 1; a <= octaveAmt; a++) {
+        //heightMap += Math.abs(ImprovedNoise.noise(xCoord / (150.576 / octaveAmt), octaveAmt * 5, octaveAmt * noiseSeed + yOff)) * (60 / (octaveAmt * 2)) - (10 / (octaveAmt * 2));
+        heightMap += Math.abs(ImprovedNoise.noise(xCoord / (150.576 / a), a * 5, a * noiseSeed + yOff)) * (60 / (a ** 2)) - (10 / (a ** 2));
+    }
+    heightMap += Math.abs(ImprovedNoise.noise(xCoord / 2000, 3700.6 + (yOff/10000), noiseSeed)) * (600) - 100;
+    //heightMap += Math.abs(ImprovedNoise.noise(xCoord / 2000, 3700.6, noiseSeed)) * (600) - (100);
+    return heightMap;
+}

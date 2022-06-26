@@ -1,12 +1,13 @@
-var fps = 20;
+var fps = 15;
 var loaded = false;
 
 setInterval(mainLoop,1000/fps);
 var mainTimer = 0;
 var xOff = 0;
 var xMod = 0;
-var randOff = 0;
+var randOff = 1;
 var gameSpeed = 1;
+var fancyMode = true;
 
 var timeOfDay = 0;
 var dayLight = 0;
@@ -16,6 +17,14 @@ var skyLight = {r:0,g:0,b:0};
 var sunlight = {r:0,g:0,b:0};
 
 function mainLoop() {
+    if (fancyMode) {
+        fps = 30;
+    }
+    else {
+        fps = 15;
+    }
+
+
     scaleWindow();
     clearCanvas('black');
 
@@ -55,4 +64,5 @@ function mainLoop() {
     drawRiver();
     drawBoat();
     drawFrontFog();
+    //drawBackLayer();
 }
