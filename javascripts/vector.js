@@ -14,6 +14,11 @@ function remap(iMin,iMax,oMin,oMax,v) {
   return lerp(oMin,oMax,t);
 }
 
+function invRemap(iMin,iMax,oMin,oMax,t) {
+  let v = lerp(iMin,iMax,t);
+  return invLerp(oMin,oMax,v);
+}
+
 //vector class
 class Vector {
   //takes an x parameter and a y parameter

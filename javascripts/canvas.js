@@ -18,6 +18,9 @@ function componentToHex(c) {
 }
 
 function rgbToHex(r, g, b) {
+    r = Math.floor(r);
+    g = Math.floor(g);
+    b = Math.floor(b);
     if (r !== undefined && g == undefined && b == undefined) {
         return "#" + componentToHex(r) + componentToHex(r) + componentToHex(r);
     }

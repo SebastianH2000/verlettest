@@ -1,49 +1,38 @@
-newCanvas('riverCan','canvasStorage',2176,1080);
-
+newCanvas('riverCan','canvasStorage',1920,1080);
 var riverCan = document.getElementById('riverCan');
 var riverCtx = riverCan.getContext('2d');
+
+newCanvas('skyCan','canvasStorage',1920,680);
+var skyCan = document.getElementById('skyCan');
+var skyCtx = skyCan.getContext('2d');
+
+newCanvas('backCan','canvasStorage',1920,500);
+var backCan = document.getElementById('backCan');
+var backCtx = backCan.getContext('2d');
 
 var riverChangeAmt = 0;
 
 function drawRiver() {
-    if (Math.floor(xOff/256) + 2 > riverChangeAmt) {
-        //clearCanvas('white',riverCtx,2176,1080);
-        riverCtx.clearRect(0,0,2176,1080);
-        /*for (let i = 0; i < 20; i++) {
-            if (i % 2 === 0) {
-                riverCtx.fillStyle = "blue"
-                riverCtx.fillRect(i*128,0,128,1080);
-            }
-            else {
-                riverCtx.fillStyle = "darkblue"
-                riverCtx.fillRect(i*128,0,128,1080);
-            }
-        }*/
-        riverCtx.fillStyle = rgbToHex(10,10,40)
-        riverCtx.fillRect(0,680,2176,1080)
-        //riverCtx.fillStyle = "blue"
-        //riverCtx.fillRect(0,0,2176,1080);
-        riverChangeAmt++;
-    }
+    riverCtx.clearRect(0,0,1920,1080);
+    riverCtx.fillStyle = rgbToHex(skyLight.r/1.5,Math.floor(lerp(0,30,dayLight)+skyLight.g)/2,Math.floor(lerp(20,150,dayLight)+skyLight.b)/2);
+    riverCtx.fillRect(0,680,1920,1080);
+    riverChangeAmt++;
 
-    ctx.drawImage(riverCan,0-canX/2+xMod-256,0-canY/2,);
+    ctx.drawImage(riverCan,0-canX/2,0-canY/2);
     //console.log(xMod)
 }
 
+//fog at bottom of screen
 newCanvas('frontFogCan','canvasStorage',1920,400);
 
 var frontFogCan = document.getElementById('frontFogCan');
 var frontFogCtx = frontFogCan.getContext('2d');
 frontFogCtx.globalAlpha = 0.25;
-var frontFogColor = ImprovedNoise.noise(mainTimer/10,noiseSeed,xOff/100)/2+0.5;
-
-//function lerp(v0,v1,t) {
-    //return (1 - t) * v0 + t * v1;
-//}
+var frontFogColor = 0;
 
 function drawFrontFog() {
     let pixelSize = 4;
-    var frontFogDensity = ImprovedNoise.noise(mainTimer/7,noiseSeed,xOff/321)/4+0.25;
+    var frontFogDensity = limit(((ImprovedNoise.noise(mainTimer/17,noiseSeed,xOff/321)/4+0.1)+humidity-0.5)/2,0,1);
     frontFogCtx.globalAlpha = frontFogDensity;
     frontFogColor = [0,ImprovedNoise.noise(mainTimer/30,noiseSeed,xOff/100.76)/2+0.5,ImprovedNoise.noise(randOff,noiseSeed,xOff/45.8)/2+0.5];
     //frontFogCtx.fillStyle = rgbToHex(Math.floor(lerp(25,255,frontFogColor)),255,255)
@@ -52,41 +41,81 @@ function drawFrontFog() {
     frontFogCtx.clearRect(0,0,1920,400);
     //frontFogDir = Math.sin(mainTimer/20);
     for (let w = 2; w < 5; w++) {
+        frontFogCtx.beginPath();
         for (let i = 0; i < 1920/pixelSize; i++) {
             for (let j = 0; j < 400/pixelSize; j++) {
                 if (ImprovedNoise.noise(i/100+(xOff*frontWindDir/w)/200+w*30,j/8,mainTimer/(100/w)+w*30+noiseSeed) > 1.3 - j/(150/(w/2+1))) {
-                    frontFogCtx.fillRect(i*pixelSize,j*pixelSize,pixelSize,pixelSize);
+                    frontFogCtx.rect(Math.floor(i*pixelSize),Math.floor(j*pixelSize),Math.ceil(pixelSize),Math.ceil(pixelSize));
                 }
             }
         }
+        frontFogCtx.fill();
     }
     ctx.drawImage(frontFogCan,0-canX/2,canY/2-400);
 }
 
+var starArr = new Array(500);
 
+starArr[0] = {
+    xPos: 0.2,
+    yPos: 300
+}
 
+starArr[1] = {
+    xPos: 0.7,
+    yPos: 300
+}
 
+for (let i = 0; i < starArr.length; i++) {
+    starArr[i] = {
+        size: ImprovedNoise.noise((noiseSeed/32000)*i,17.22,i)/2+1,
+        brightness: ImprovedNoise.noise((noiseSeed/85000)*i,98.63,i)/4+0.75,
+        xPos: ImprovedNoise.noise((noiseSeed/91000)*i,1.89,i)*Math.PI*2,
+        yPos: (ImprovedNoise.noise((noiseSeed/17000)*i,5.83,i)/2)*680
+    }
+}
 
-/*var region = 'surface';
-var humidity = 0.5;
-var heat = 0.5;
+var starOrbitRadius = 6000;
 
+function drawSky() {
+    //draw skybox
+    skyCtx.fillStyle = rgbToHex(skyLight.r,skyLight.g,skyLight.b);
+    skyCtx.fillRect(0,0,1920,680);
 
-function updateBackground() {
-    backCtx.clearRect(0,0,480,270);
-    backCtx.fillStyle = 'black'
+    //star variables
+    let starSpeed = 0.2;
+    let starTime = mainTimer/300+(noiseSeed/10000);
+    let heightVariation = 3;
 
-    let terrainRoughness = 1;
-
-    for (let i = 0; i < 240; i++) {
-        player.x = mainTimer*100;
-        let yLevel = getHeightMap(player.x-(i)+120);
-        //draw back parallax layer
-        //drawSquare(i*2,ImprovedNoise.noise(i/100+mainTimer/40,noiseSeed,160.75)*30+150,2,backCtx);
-        drawSquare(480-i*2,Math.min(yLevel,0)+170,2,backCtx);
-
-        let yLevel2 = getHeightMap(player.x-(i)+120,100);
-        drawSquare(480-i*2,Math.min(yLevel2,0)+170,2,backCtx);
+    //draw sun & moon
+    /*skyCtx.fillStyle = 'silver'
+    if (starArr[0].xPos > 1) {
+        starArr[0].xPos = 0;
+    }
+    let orbitChange = starOrbitRadius+(200);
+    drawCircle(Math.floor(limSin((starTime*starSpeed)*Math.PI*2+starArr[0].xPos)*orbitChange-orbitChange/3),Math.floor((0-limCos((starTime*starSpeed)*Math.PI*2+starArr[0].xPos))*orbitChange+(starOrbitRadius+300)),30,skyCtx);
+    orbitChange = starOrbitRadius+(200);
+    skyCtx.fillStyle = rgbToHex(sunColor.r,sunColor.g,sunColor.b);
+    drawCircle(Math.floor(limSin((starTime*starSpeed)*Math.PI*2+starArr[1].xPos)*orbitChange-orbitChange/3),Math.floor((0-limCos((starTime*starSpeed)*Math.PI*2+starArr[1].xPos))*orbitChange+(starOrbitRadius+300)),40,skyCtx);
+    */
+    if (timeOfDay > 0.5 && timeOfDay < 0.9) {
+        skyCtx.fillStyle = rgbToHex(sunColor.r,sunColor.g,sunColor.b);
+        drawCircle((timeOfDay-0.5)*2020*2.5-50,300-Math.sin(((timeOfDay+0.5)%1)*Math.PI*2.5)*200,40,skyCtx);
+    }
+    else if (timeOfDay > 0 && timeOfDay < 0.4) {
+        skyCtx.fillStyle = 'silver'
+        drawCircle(timeOfDay*2020*2.5-50,300-Math.sin(timeOfDay*Math.PI*2.5)*200,30,skyCtx);
     }
 
-}*/
+    //draw stars
+    skyCtx.globalAlpha = limit(1-dayLight-0.25,0,1);
+    for (let i = 0; i < starArr.length; i++) {
+        let orbitChange = starOrbitRadius+(heightVariation*starArr[i].yPos);
+        skyCtx.fillStyle = rgbToHex(255*starArr[i].brightness,255*starArr[i].brightness,255*starArr[i].brightness);
+        //drawCircle(Math.floor(limSin((starTime*starSpeed)*Math.PI*2+starArr[i].xPos)*orbitChange-orbitChange/3),Math.floor((0-limCos((starTime*starSpeed)*Math.PI*2+starArr[i].xPos))*orbitChange+(starOrbitRadius+300)),starArr[i].size*3,skyCtx);
+        drawCircle(limSin((starTime*starSpeed)*Math.PI*2+starArr[i].xPos)*orbitChange-orbitChange/3,(0-limCos((starTime*starSpeed)*Math.PI*2+starArr[i].xPos))*orbitChange+(starOrbitRadius+300),starArr[i].size*3,skyCtx);
+    }
+    skyCtx.globalAlpha = 1;
+
+    ctx.drawImage(skyCan,0-canX/2,0-canY/2);
+}

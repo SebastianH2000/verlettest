@@ -5,6 +5,8 @@ var sideOffset = 1;
 var canObj = {};
 
 var noiseSeed = Math.floor(Math.random()*1000000);
+//var noiseSeed = 69420;
+//var noiseSeed = 496677;
 
 while (noiseSeed < 100000) {
     noiseSeed *= 10;
@@ -151,6 +153,18 @@ function fromBijective(x) {
 
 function absMod(n, m) {
     return ((n % m) + m) % m;
+}
+
+function limSin (value) {
+    return Math.sin(value)/2+0.5;
+}
+
+function limCos (value) {
+    return Math.cos(value)/2+0.5;
+}
+
+function limit (value, start, end) {
+    return Math.min(Math.max(value,start),end);
 }
 
 padNum = function(value, n) {
