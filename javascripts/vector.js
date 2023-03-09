@@ -36,6 +36,15 @@ class Vector {
       return "(x" + this.x.toFixed(precision) + ", y" + this.y.toFixed(precision) + ")";
     }
   }
+
+  static toString(vec1, precision) {
+    if (precision === undefined) {
+      return "(x" + Math.round(vec1.x) + ", y" + Math.round(vec1.y) + ")";
+    }  
+    else {
+      return "(x" + vec1.x.toFixed(precision) + ", y" + vec1.y.toFixed(precision) + ")";
+    }
+  }
   
   //the set() method takes two parameters and sets the x,y values of the vector to those new values
   set(x,y) {
@@ -65,6 +74,40 @@ class Vector {
       this.y += y;
     }
   }
+
+  static add(vec1,vec2,x2,y2) {
+    let endVec = new Vector(0,0);
+    if (typeof vec1 === "object") {
+      //if the first parameter is an object (Vector) add its position
+      endVec.x += vec1.x;
+      endVec.y += vec1.y;
+      if (typeof vec2 === "object") {
+        //if the second parameter is an object (Vector) add its position
+        endVec.x += vec2.x;
+        endVec.y += vec2.y;
+      }
+      else {
+        //if the first parameter is an object (Vector) but the second parameter isn't an object then add the next two parameters
+        endVec.x += vec2;
+        endVec.y += x2;
+      }
+    }
+    else if (typeof x2 === "object") {
+      //if the first two parameters aren't objects (Vectors) but the third one is then add the first two parameters to the positioin of the third
+      endVec.x += vec1;
+      endVec.y += vec2;
+      endVec.x += x2.x;
+      endVec.y += x2.y;
+    }
+    else {
+      //if none of the parameters are objects (Vectors) just add them all together
+      endVec.x += vec1;
+      endVec.y += vec2;
+      endVec.x += x2;
+      endVec.y += y2;
+    }
+    return endVec;
+  }
   
   //rem()
   //the sub() method subtracts an x and y value from this, or it subtracts a whole vector from this
@@ -78,6 +121,35 @@ class Vector {
       this.y -= y;
     }
   }
+
+  static sub(vec1,vec2,x2,y2) {
+    let endVec = new Vector(0,0);
+    if (typeof vec1 === "object") {
+      endVec.x += vec1.x;
+      endVec.y += vec1.y;
+      if (typeof vec2 === "object") {
+        endVec.x -= vec2.x;
+        endVec.y -= vec2.y;
+      }
+      else {
+        endVec.x -= vec2;
+        endVec.y -= x2;
+      }
+    }
+    else if (typeof x2 === "object") {
+      endVec.x += vec1;
+      endVec.y += vec2;
+      endVec.x -= x2.x;
+      endVec.y -= x2.y;
+    }
+    else {
+      endVec.x += vec1;
+      endVec.y += vec2;
+      endVec.x -= x2;
+      endVec.y -= y2;
+    }
+    return endVec;
+  }
   
   //the mult() method multiplies the x and y of this by a value, or the x and y of a whole vector
   mult(x) {
@@ -89,6 +161,40 @@ class Vector {
       this.x *= x;
       this.y *= x;
     }
+  }
+
+  static mult(vec1,vec2,x2,y2) {
+    let endVec = new Vector(0,0);
+    if (typeof vec1 === "object") {
+      //if the first parameter is an object (Vector) set its position as the base
+      endVec.x = vec1.x;
+      endVec.y = vec1.y;
+      if (typeof vec2 === "object") {
+        //if the second parameter is an object (Vector) multiply by its position
+        endVec.x *= vec2.x;
+        endVec.y *= vec2.y;
+      }
+      else {
+        //if the first parameter is an object (Vector) but the second parameter isn't an object then multiply by the next two parameters
+        endVec.x *= vec2;
+        endVec.y *= x2;
+      }
+    }
+    else if (typeof x2 === "object") {
+      //if the first two parameters aren't objects (Vectors) but the third one is then multiply the first two parameters by the positioin of the third
+      endVec.x = vec1;
+      endVec.y = vec2;
+      endVec.x *= x2.x;
+      endVec.y *= x2.y;
+    }
+    else {
+      //if none of the parameters are objects (Vectors) just multiply them all together
+      endVec.x = vec1;
+      endVec.y = vec2;
+      endVec.x *= x2;
+      endVec.y *= y2;
+    }
+    return endVec;
   }
   
   //the div() method divides the x and y of this by a value, or the x and y of a whole vector

@@ -13,6 +13,7 @@ while (noiseSeed < 100000) {
 }
 
 function scaleWindow() {
+    console.log('scaled')
     document.body.style.transform = "scale(1)";
     let win = window,
         doc = document,
@@ -60,35 +61,8 @@ var scrubMode = false;
 var pressedLeft = false;
 var pressedRight = false;
 
-function mouseDown(val) {
-    if (mouseY < 0) {
-        scrubMode = !scrubMode;
-    }
-    if (mouseX < -480) {
-        pressedLeft = true;
-    }
-    else if (mouseX > 480) {
-        pressedRight = true;
-    }
-    if (val === 0) {
-        mouseLIsDown = true;
-    }
-    else if (val === 2) {
-        mouseRIsDown = true;
-    }
-}
-
 function mouseUp(val) {
-    if (val === 0) {
-        mouseLIsDown = false;
-    }
-    else if (val === 2) {
-        mouseRIsDown = false;
-    }
-    pressedLeft = false;
-    pressedRight = false;
 }
-
 var mouseX = 0;
 var mouseY = 0;
 

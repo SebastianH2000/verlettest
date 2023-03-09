@@ -61,6 +61,14 @@ function drawCircle(x,y,r,ctxObj) {
     ctxObj.closePath();
 }
 
+function strokeCircle(x,y,r,w,ctxObj) {
+    ctxObj.beginPath();
+    ctxObj.arc(x,y,r,0,360);
+    ctxObj.lineWidth = w;
+    ctxObj.stroke();
+    ctxObj.closePath();
+}
+
 function newCanvas(id,divId,width,height) {
     let canvas = document.createElement("canvas");
     canvas.id = id;
