@@ -87,7 +87,6 @@ function mainLoop() {
         //push current particle to collision array
         //gameArr[(Math.floor(particleArr[i].currentPos.x/particleWidth)+radius/particleWidth)][(Math.floor(particleArr[i].currentPos.y/particleWidth)+radius/particleWidth)].push(particleArr[i]);
         gameArr[Math.floor(particleArr[i].currentPos.x/particleWidth+radius/particleWidth)][Math.floor(particleArr[i].currentPos.y/particleWidth+radius/particleWidth)].push(particleArr[i]);
-        //console.log(gameArr[(Math.floor(particleArr[i].currentPos.x/particleWidth)+radius/particleWidth)][(Math.floor(particleArr[i].currentPos.y/particleWidth)+radius/particleWidth)])
     }
 
     //clear particle array
